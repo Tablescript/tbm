@@ -1,0 +1,46 @@
+[
+  {
+    "name": "a",
+    "requested": [
+      {
+        "name": "dnd4e",
+        "version": "^1.0.1"
+      }
+    ],
+    "version": "1.1.0"
+  },
+  {
+    "name": "b",
+    "requested": [
+      {
+        "name": "dnd4e",
+        "version": "^1.0.0"
+      }
+    ],
+    "version": "1.0.0"
+  },
+  {
+    "name": "c",
+    "requested": [
+      {
+        "name": "a",
+        "version": "^1.0.1"
+      },
+      {
+        "name": "b",
+        "version": "^1.0.0"
+      }
+    ],
+    "version": "1.0.1"
+  },
+  {
+    "name": "dnd4e",
+    "requested": [
+      {
+        "name": "mine",
+        "version": "1.0.2"
+      }
+    ],
+    "version": "1.0.2"
+  }
+]

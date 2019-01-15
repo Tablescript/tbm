@@ -1,0 +1,49 @@
+{
+  "name": "tbm",
+  "version": "0.1.0",
+  "description": "Tablscript Bundle Master",
+  "url": "https://tablescript.org/tbm",
+  "bin": {
+    "tbm": "./dist/bin/tbm.js"
+  },
+  "scripts": {
+    "build": "node_modules/.bin/babel src --ignore __tests__ --out-dir dist",
+    "dependency-graph": "madge --image tablescript-graph.svg src/bin/tablescript.js",
+    "lint": "node_modules/.bin/eslint src",
+    "test": "mocha --require babel-core/register --require babel-polyfill src/**/*.test.js"
+  },
+  "author": {
+    "name": "Jamie Hale",
+    "email": "jamie@smallarmyofnerds.com",
+    "url": "https://smallarmyofnerds.com"
+  },
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tablescript/tbm"
+  },
+  "devDependencies": {
+    "@babel/node": "^7.6.2",
+    "chai": "*",
+    "chai-as-promised": "*",
+    "chai-spies-next": "*",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-jest": "^22.7.1",
+    "madge": "^3.2.0",
+    "mocha": "*"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "commander": "^3.0.2",
+    "mkdirp": "^0.5.1",
+    "pkginfo": "^0.4.1",
+    "ramda": "^0.26.1",
+    "rimraf": "^3.0.0",
+    "semver": "^6.3.0"
+  }
+}
