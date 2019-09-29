@@ -44,6 +44,7 @@
     "mkdirp": "^0.5.1",
     "pkginfo": "^0.4.1",
     "ramda": "^0.26.1",
+    "recursive-copy": "^2.0.10",
     "rimraf": "^3.0.0",
     "semver": "^6.3.0"
   }

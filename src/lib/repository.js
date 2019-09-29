@@ -1,5 +1,18 @@
 import axios from 'axios';
 import * as R from 'ramda';
+import fs from 'fs';
+import os from 'os';
+import mkdirp from 'mkdirp';
+import recursiveCopy from 'recursive-copy';
+
+const cachePath = () => {
+  const homeDir = os.homedir();
+  return `${homeDir}/.tbm/cache`;
+};
+
+const initializeConfig = () => {
+  mkdirp.sync(cachePath());
+};  
 
 const depVersion = (dep, version) => `${dep}@${version}`;
 
@@ -19,6 +32,7 @@ const getCachedManifest = async dep => manifestCache[dep];
 const getCachedBundleDescriptor = async depVersion => descriptorCache[depVersion];
 
 export const loadManifestFor = async dep => {
+  initializeConfig();
   const cachedManifest = await getCachedManifest(dep);
   if (cachedManifest) {
     console.log(`Using cached bundle manifest for ${dep}.`);
@@ -35,6 +49,7 @@ export const loadManifestFor = async dep => {
 };
 
 export const loadBundleDescriptorFor = async (dep, version) => {
+  initializeConfig();
   const cachedBundleDescriptor = await getCachedBundleDescriptor(depVersion(dep, version));
   if (cachedBundleDescriptor) {
     console.log(`Using cached bundle descriptor for ${depVersion(dep, version)}.`)
@@ -53,4 +68,28 @@ export const loadBundleDescriptorFor = async (dep, version) => {
 export const getLatestVersionFor = async dep => {
   const manifest = await loadManifestFor(dep);
   return manifest.latest;
+};
+
+const ensureBundleIsCached = async (name, version) => {
+  if (fs.existsSync(`${cachePath()}/${name}/${version}`)) {
+    return;
+  }
+
+  mkdirp.sync(`${cachePath()}/${name}/${version}`);
+  const writer = fs.createWriteStream(`${cachePath()}/${name}/${version}/bundle.json`);
+
+  await axios.get(`http://localhost:8080/api/v1/bundles/${name}/releases/${version}`, { responseType: 'stream' })
+    .then(response => {
+      response.data.pipe(writer);
+      return new Promise((resolve, reject) => {
+        writer.on('finish', resolve);
+        writer.on('error', reject);
+      });
+    });
+};
+
+export const unpackBundleInto = async (name, version, path) => {
+  initializeConfig();
+  await ensureBundleIsCached(name, version);
+  await recursiveCopy(`${cachePath()}/${name}/${version}`, path);
 };

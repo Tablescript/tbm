@@ -1,6 +1,5 @@
 import {
   readBundleDescriptor,
-  bundleDependencies,
   bundleTimestamp
 } from '../descriptor';
 import mkdirp from 'mkdirp';
@@ -11,22 +10,17 @@ import {
   lockfileExists,
   rebuildLockfile,
 } from '../lockfile';
+import { unpackBundleInto } from '../repository';
 
-const fetchAndUnpackBundle = name => {
-  console.log(`fetching and unpacking ${name}...`);
+const fetchAndUnpackBundle = (name, version) => {
   mkdirp.sync(`bundles/${name}`);
-  
+  unpackBundleInto(name, version, `bundles/${name}`);
 };
 
-const loadBundle = (name, version) => {
-  mkdirp.sync(`bundles/${name}`);
-  fetchAndUnpackBundle(name, version);
-};
-
-const loadAllBundles = lockfile => {
-  lockfile.forEach(dependency => {
-    loadBundle(dependency.name, dependency.version);
-  });
+const loadAllBundles = async lockfile => {
+  await Promise.all(lockfile.map(dependency => {
+    fetchAndUnpackBundle(dependency.name, dependency.version);
+  }));
 };
 
 const sync = async options => {
@@ -42,7 +36,7 @@ const sync = async options => {
   }
   rimraf.sync('bundles');
   mkdirp.sync('bundles');
-  loadAllBundles(await readLockfile(options.lockfile));
+  await loadAllBundles(await readLockfile(options.lockfile));
 };
 
 export default sync;

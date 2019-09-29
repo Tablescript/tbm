@@ -65,7 +65,7 @@ const resolveVersion = async (name, details) => {
 const toResolved = async ([name, details]) => ({
   name,
   ...details,
-  version: resolveVersion(name, details),
+  version: await resolveVersion(name, details),
 });
 
 const asyncMap = (f, arr) => arr.reduce(async (p, v, i) => ([
