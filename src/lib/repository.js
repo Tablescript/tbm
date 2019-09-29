@@ -1,3 +1,6 @@
+import axios from 'axios';
+import * as R from 'ramda';
+
 const buildBundle = (version, dependencies = {}) => ({
   version,
   dependencies,
@@ -69,7 +72,8 @@ const repo = {
 };
 
 export const loadManifestFor = async dep => {
-  return repo[dep].manifest;
+  return axios.get(`http://localhost:8080/api/v1/bundles/${dep}/manifest`)
+    .then(R.prop('data'));
 };
 
 export const loadBundleFor = async (dep, version) => {
