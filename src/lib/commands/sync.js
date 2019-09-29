@@ -31,7 +31,8 @@ const loadAllBundles = lockfile => {
 
 const sync = async options => {
   if (lockfileExists(options.lockfile)) {
-    if (bundleTimestamp(options.lockfile) > lockfileTimestamp(options.lockfile)) {
+    console.log('Lockfile exists...');
+    if (bundleTimestamp(options.bundle) > lockfileTimestamp(options.lockfile)) {
       console.log('Bundle updated - rebuilding lockfile...');
       await rebuildLockfile(options.lockfile, readBundleDescriptor(options.bundle));
     }

@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 import semver from 'semver';
-import { loadManifestFor, loadBundleFor, getLatestVersionFor } from './repository';
+import { loadManifestFor, loadBundleDescriptorFor, getLatestVersionFor } from './repository';
 
 const makeSemVer = version => `^${version}`;
 
@@ -18,7 +18,7 @@ const mergeDependency = R.curry((bundleName, name, version, tree) => ({
   },
 }));
 
-const mergeSubdependencies = R.curry((name, version, tree) => mergeBundleDependencies(loadBundleFor(name, version), tree));
+const mergeSubdependencies = R.curry((name, version, tree) => mergeBundleDependencies(loadBundleDescriptorFor(name, version), tree));
 
 const mergeBundleDependency = R.curry((bundleName, tree, [name, versionRange]) => {
   const resolvedVersion = semver.maxSatisfying(loadManifestFor(name).versions, versionRange);

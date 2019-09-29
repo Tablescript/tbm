@@ -72,12 +72,15 @@ const repo = {
 };
 
 export const loadManifestFor = async dep => {
+  console.log(`Fetching bundle manifest for ${dep}...`);
   return axios.get(`http://localhost:8080/api/v1/bundles/${dep}/manifest`)
     .then(R.prop('data'));
 };
 
-export const loadBundleFor = async (dep, version) => {
-  return repo[dep].versions[version];
+export const loadBundleDescriptorFor = async (dep, version) => {
+  console.log(`Fetching bundle descriptor for ${dep}@${version}...`);
+  return axios.get(`http://localhost:8080/api/v1/bundles/${dep}/releases/${version}`)
+    .then(R.prop('data'));
 };
 
 export const getLatestVersionFor = async dep => {

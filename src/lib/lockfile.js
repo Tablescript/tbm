@@ -1,9 +1,7 @@
 import * as R from 'ramda';
 import fs from 'fs';
 import semver from 'semver';
-import { loadManifestFor, loadBundleFor } from './repository';
-
-const DEFAULT_LOCKFILE = 'bundle.lock';
+import { loadManifestFor, loadBundleDescriptorFor } from './repository';
 
 export const lockfileTimestamp = (filename) => {
   return fs.statSync(filename).mtime;
@@ -37,7 +35,7 @@ const mergeDependency = (bundleName, name, version, tree) => ({
 });
 
 const mergeSubdependencies = async (name, version, tree) => {
-  const bundle = await loadBundleFor(name, version);
+  const bundle = await loadBundleDescriptorFor(name, version);
   return mergeBundleDependencies(bundle, tree);
 };
 
