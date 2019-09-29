@@ -1,11 +1,9 @@
 import axios from 'axios';
-import * as R from 'ramda';
 import fs from 'fs';
 import os from 'os';
 import mkdirp from 'mkdirp';
 import recursiveCopy from 'recursive-copy';
 import tar from 'tar';
-import { writer } from 'repl';
 
 const cachePath = () => {
   const homeDir = os.homedir();
@@ -27,16 +25,6 @@ const ensureBundleCachePathExists = (name) => {
 const initializeConfig = () => {
   ensureCachePathExists();
 };  
-
-const depVersion = (dep, version) => `${dep}@${version}`;
-
-const manifestCache = {};
-
-const cacheManifest = async (dep, manifest) => {
-  manifestCache[dep] = manifest;
-};
-
-const getCachedManifest = async dep => manifestCache[dep];
 
 const ensureManifestIsCached = async (dep) => {
   if (fs.existsSync(`${bundleCachePath(dep)}/manifest.json`)) {
