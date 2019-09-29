@@ -22,7 +22,7 @@ const writeLockfile = R.curry((filename, contents) => {
 });
 
 
-const mergeDependency = R.curry((bundleName, name, version, tree) => ({
+const mergeDependency = (bundleName, name, version, tree) => ({
   ...tree,
   [name]: {
     ...(tree[name] || {}),
@@ -34,43 +34,55 @@ const mergeDependency = R.curry((bundleName, name, version, tree) => ({
       },
     ]
   },
-}));
-
-const mergeSubdependencies = R.curry((name, version, tree) => mergeBundleDependencies(loadBundleFor(name, version), tree));
-
-const mergeBundleDependency = R.curry((bundleName, tree, [name, versionRange]) => {
-  const resolvedVersion = semver.maxSatisfying(loadManifestFor(name).versions, versionRange);
-
-  return R.compose(
-    mergeSubdependencies(name, resolvedVersion),
-    mergeDependency(bundleName, name, versionRange),
-  )(tree);
 });
 
-const mergeBundleDependencies = (bundle, tree = {}) => R.toPairs(bundle.dependencies).reduce(mergeBundleDependency(bundle.name), tree);
-
-const resolveBundleDependencies = (requested) => {
-
-  const requestedVersions = R.compose(
-    R.join(' '),
-    R.map(R.prop('version')),
-  );
-
-  const toResolved = ([name, details]) => ({
-    name,
-    ...details,
-    version: semver.maxSatisfying(loadManifestFor(name).versions, requestedVersions(details.requested)),
-  });
-
-  return R.compose(
-    R.sortBy(R.prop('name')),
-    R.map(toResolved),
-    R.toPairs,
-  )(requested);
+const mergeSubdependencies = async (name, version, tree) => {
+  const bundle = await loadBundleFor(name, version);
+  return mergeBundleDependencies(bundle, tree);
 };
 
-export const rebuildLockfile = R.curry((filename, bundle) => R.compose(
-  writeLockfile(filename),
-  resolveBundleDependencies,
-  mergeBundleDependencies,
-)(bundle));
+const mergeBundleDependency = bundleName => async (p, [name, versionRange]) => {
+  const tree = await p;
+  const manifest = await loadManifestFor(name);
+  const resolvedVersion = semver.maxSatisfying(manifest.versions, versionRange);
+
+  return mergeSubdependencies(name, resolvedVersion, mergeDependency(bundleName, name, versionRange, tree));
+};
+
+const mergeBundleDependencies = async (bundle, tree = {}) => {
+  const pairs = R.toPairs(bundle.dependencies);
+  return pairs.reduce(mergeBundleDependency(bundle.name), Promise.resolve(tree));
+};
+
+const requestedVersions = R.compose(
+  R.join(' '),
+  R.map(R.prop('version')),
+);
+
+const resolveVersion = async (name, details) => {
+  const manifest = await loadManifestFor(name);
+  return semver.maxSatisfying(manifest.versions, requestedVersions(details.requested));
+};
+
+const toResolved = async ([name, details]) => ({
+  name,
+  ...details,
+  version: resolveVersion(name, details),
+});
+
+const asyncMap = (f, arr) => arr.reduce(async (p, v, i) => ([
+  ...(await p),
+  await f(v, i),
+]), []);
+
+const resolveBundleDependencies = async (requested) => {
+  return R.compose(
+    R.sortBy(R.prop('name')),
+  )(await asyncMap(toResolved, R.toPairs(requested)));
+};
+
+export const rebuildLockfile = async (filename, bundle) => {
+  const merged = await mergeBundleDependencies(bundle);
+  const resolved = await resolveBundleDependencies(merged);
+  writeLockfile(filename, resolved);
+};

@@ -6,13 +6,13 @@ import {
 } from '../descriptor';
 import sync from './sync';
 
-const remove = (name, options) => {
+const remove = async (name, options) => {
   R.compose(
     writeBundleDescriptor(options.bundle),
     removeBundleDependency(name),
   )(readBundleDescriptor(options.bundle));
 
-  sync(options);
+  await sync(options);
 };
 
 export default remove;

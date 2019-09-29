@@ -68,6 +68,15 @@ const repo = {
   ),
 };
 
-export const loadManifestFor = dep => repo[dep].manifest;
-export const loadBundleFor = (dep, version) => repo[dep].versions[version];
-export const getLatestVersionFor = dep => loadManifestFor(dep).latest;
+export const loadManifestFor = async dep => {
+  return repo[dep].manifest;
+};
+
+export const loadBundleFor = async (dep, version) => {
+  return repo[dep].versions[version];
+};
+
+export const getLatestVersionFor = async dep => {
+  const manifest = await loadManifestFor(dep);
+  return manifest.latest;
+};

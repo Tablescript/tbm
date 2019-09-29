@@ -13,18 +13,18 @@ const throwIfEmpty = R.curry((message, s) => {
   }
 });
 
-const parseDependency = (name, version) => {
+const parseDependency = async (name, version) => {
   throwIfEmpty('No name', name);
-  return [name, version || getLatestVersionFor(name)];
+  return [name, version || await getLatestVersionFor(name)];
 };
 
-const add = (name, version, options) => {
+const add = async (name, version, options) => {
   R.compose(
     writeBundleDescriptor(options.bundle),
-    addBundleDependency(...parseDependency(name, version)),
+    addBundleDependency(...(await parseDependency(name, version))),
   )(readBundleDescriptor(options.bundle));
 
-  sync(options);
+  await sync(options);
 };
 
 export default add;
