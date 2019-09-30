@@ -23,17 +23,18 @@ const loadAllBundles = async lockfile => {
   }));
 };
 
-const sync = async options => {
-  if (lockfileExists(options.lockfile)) {
-    console.log('Lockfile exists...');
-    if (bundleTimestamp(options.bundle) > lockfileTimestamp(options.lockfile)) {
-      console.log('Bundle updated - rebuilding lockfile...');
-      await rebuildLockfile(options.lockfile, readBundleDescriptor(options.bundle));
+const ensureLockfileExists = async (bundle, lockfile) => {
+  if (lockfileExists(lockfile)) {
+    if (bundleTimestamp(bundle) > lockfileTimestamp(lockfile)) {
+      await rebuildLockfile(lockfile, readBundleDescriptor(bundle));
     }
   } else {
-    console.log('No lockfile - rebuilding...');
-    await rebuildLockfile(options.lockfile, readBundleDescriptor(options.bundle));
+    await rebuildLockfile(lockfile, readBundleDescriptor(bundle));
   }
+};
+
+const sync = async options => {
+  await ensureLockfileExists(options.bundle, options.lockfile);
   rimraf.sync('bundles');
   mkdirp.sync('bundles');
   await loadAllBundles(await readLockfile(options.lockfile));

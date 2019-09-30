@@ -81,7 +81,7 @@ const init = options => {
   askAll(rl, allQuestions(buildQuestion), overriddenBundleDescriptor).then(finalBundleDescriptor => {
     writeBundleDescriptor(options.bundle, finalBundleDescriptor);
     process.exit(0);
-  });  
+  });
 }
 
 export default init;

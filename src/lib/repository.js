@@ -1,4 +1,3 @@
-import axios from 'axios';
 import fs from 'fs';
 import os from 'os';
 import mkdirp from 'mkdirp';
@@ -56,7 +55,7 @@ const ensureBundleIsCached = async (name, version) => {
   ensureBundleCachePathExists(name);
   const writer = fs.createWriteStream(tarballPath(name, version));
   await getAndStreamInto(repoBundleTarballUrl(name, version), writer);
-  
+
   await tar.extract({ file: tarballPath(name, version), cwd: bundleCachePath(name) });
 };
 
