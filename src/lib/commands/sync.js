@@ -1,9 +1,9 @@
-import {
-  readBundleDescriptor,
-  bundleTimestamp
-} from '../descriptor';
 import mkdirp from 'mkdirp';
 import rimraf from 'rimraf';
+import {
+  readBundleDescriptor,
+  bundleTimestamp,
+} from '../descriptor';
 import {
   lockfileTimestamp,
   readLockfile,
@@ -12,15 +12,13 @@ import {
 } from '../lockfile';
 import { unpackBundleInto } from '../repository';
 
-const fetchAndUnpackBundle = (name, version) => {
+const fetchAndUnpackBundle = async ({ name, version }) => {
   mkdirp.sync(`bundles/${name}`);
-  unpackBundleInto(name, version, `bundles/${name}`);
+  await unpackBundleInto(name, version, `bundles/${name}`);
 };
 
-const loadAllBundles = async lockfile => {
-  await Promise.all(lockfile.map(dependency => {
-    fetchAndUnpackBundle(dependency.name, dependency.version);
-  }));
+const loadAllBundles = async (lockfile) => {
+  await Promise.all(lockfile.map(fetchAndUnpackBundle));
 };
 
 const ensureLockfileExists = async (bundle, lockfile) => {
@@ -33,7 +31,7 @@ const ensureLockfileExists = async (bundle, lockfile) => {
   }
 };
 
-const sync = async options => {
+const sync = async (options) => {
   await ensureLockfileExists(options.bundle, options.lockfile);
   rimraf.sync('bundles');
   mkdirp.sync('bundles');

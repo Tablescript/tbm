@@ -3,20 +3,14 @@ import fs from 'fs';
 import semver from 'semver';
 import { loadManifestFor, loadBundleDescriptorFor } from './repository';
 
-export const lockfileTimestamp = (filename) => {
-  return fs.statSync(filename).mtime;
-};
+export const lockfileTimestamp = filename => fs.statSync(filename).mtime;
 
-export const lockfileExists = (filename) => {
-  return fs.existsSync(filename);
-};
+export const lockfileExists = filename => fs.existsSync(filename);
 
-export const readLockfile = (filename) => {
-  return JSON.parse(fs.readFileSync(filename, 'utf8'));
-};
+export const readLockfile = filename => JSON.parse(fs.readFileSync(filename, 'utf8'));
 
 const writeLockfile = R.curry((filename, contents) => {
-  fs.writeFileSync(filename, JSON.stringify(contents, null, 2) + "\n");
+  fs.writeFileSync(filename, `${JSON.stringify(contents, null, 2)}\n`);
 });
 
 
@@ -30,7 +24,7 @@ const mergeDependency = (bundleName, name, version, tree) => ({
         name: bundleName,
         version,
       },
-    ]
+    ],
   },
 });
 
@@ -73,11 +67,9 @@ const asyncMap = (f, arr) => arr.reduce(async (p, v, i) => ([
   await f(v, i),
 ]), []);
 
-const resolveBundleDependencies = async (requested) => {
-  return R.compose(
-    R.sortBy(R.prop('name')),
-  )(await asyncMap(toResolved, R.toPairs(requested)));
-};
+const resolveBundleDependencies = async requested => R.compose(
+  R.sortBy(R.prop('name')),
+)(await asyncMap(toResolved, R.toPairs(requested)));
 
 export const rebuildLockfile = async (filename, bundle) => {
   const merged = await mergeBundleDependencies(bundle);

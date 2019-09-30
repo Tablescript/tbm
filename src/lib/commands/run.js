@@ -2,10 +2,10 @@ import { execSync } from 'child_process';
 import {
   readBundleDescriptor,
   bundleHasMainScript,
-  bundleMainScript
+  bundleMainScript,
 } from '../descriptor';
 
-const run = options => {
+const run = (options) => {
   const bundle = readBundleDescriptor();
   if (!bundleHasMainScript(bundle)) {
     console.log('No main script defined');

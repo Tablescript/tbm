@@ -13,7 +13,7 @@ const dumpAllDependencies = R.compose(
   bundleDependencies,
 );
 
-const list = options => {
+const list = (options) => {
   dumpAllDependencies(readBundleDescriptor(options.bundle));
 };
 

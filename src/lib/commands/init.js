@@ -3,15 +3,15 @@ import {
   defaultBundleDescriptor,
   bundleDescriptorExists,
   readBundleDescriptor,
-  writeBundleDescriptor
+  writeBundleDescriptor,
 } from '../descriptor';
 
-const ask = (rl, answers, question) => new Promise(resolve => {
-  rl.question(`${question.query} [${answers[question.name] || ''}]: `, answer => {
+const ask = (rl, answers, question) => new Promise((resolve) => {
+  rl.question(`${question.query} [${answers[question.name] || ''}]: `, (answer) => {
     if (answer) {
       resolve({
         ...answers,
-        [question.name]: answer
+        [question.name]: answer,
       });
     } else {
       resolve(answers);
@@ -19,11 +19,11 @@ const ask = (rl, answers, question) => new Promise(resolve => {
   });
 });
 
-const applyParameter = (value, key) => descriptor => {
+const applyParameter = (value, key) => (descriptor) => {
   if (value) {
     return {
       ...descriptor,
-      [key]: value
+      [key]: value,
     };
   }
   return descriptor;
@@ -64,24 +64,24 @@ const getTemplateBundleDescriptor = (options) => {
     return readBundleDescriptor(options.bundle);
   }
   return defaultBundleDescriptor(currentDirectoryName());
-}
+};
 
-const init = options => {
+const init = (options) => {
   const loadedBundleDescriptor = getTemplateBundleDescriptor(options);
   const overriddenBundleDescriptor = {
     ...loadedBundleDescriptor,
-    ...answersFromCommandLine(allParameters(applyParameter, options))
+    ...answersFromCommandLine(allParameters(applyParameter, options)),
   };
 
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
-  askAll(rl, allQuestions(buildQuestion), overriddenBundleDescriptor).then(finalBundleDescriptor => {
+  askAll(rl, allQuestions(buildQuestion), overriddenBundleDescriptor).then((finalBundleDescriptor) => {
     writeBundleDescriptor(options.bundle, finalBundleDescriptor);
     process.exit(0);
   });
-}
+};
 
 export default init;
