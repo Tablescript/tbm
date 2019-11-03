@@ -65,7 +65,7 @@ const toResolved = async ([name, details]) => ({
 const asyncMap = (f, arr) => arr.reduce(async (p, v, i) => ([
   ...(await p),
   await f(v, i),
-]), []);
+]), Promise.resolve([]));
 
 const resolveBundleDependencies = async requested => R.compose(
   R.sortBy(R.prop('name')),

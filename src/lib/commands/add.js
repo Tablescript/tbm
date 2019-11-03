@@ -18,13 +18,15 @@ const parseDependency = async (name, version) => {
   return [name, version || await getLatestVersionFor(name)];
 };
 
-const add = async (name, version, options) => {
-  R.compose(
-    writeBundleDescriptor(options.bundle),
-    addBundleDependency(...(await parseDependency(name, version))),
-  )(readBundleDescriptor(options.bundle));
-
-  await sync(options);
+const add = (name, version, options) => {
+  const bundleDescriptor = readBundleDescriptor(options.bundle);
+  return parseDependency(name, version)
+    .then(([name, version]) => addBundleDependency(name, version, bundleDescriptor))
+    .then(writeBundleDescriptor(options.bundle))
+    .then(() => sync(options))
+    .catch(e => {
+      console.log(`Error: ${e}`);
+    });
 };
 
 export default add;

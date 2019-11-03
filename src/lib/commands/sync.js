@@ -12,14 +12,12 @@ import {
 } from '../lockfile';
 import { unpackBundleInto } from '../repository';
 
-const fetchAndUnpackBundle = async ({ name, version }) => {
+const fetchAndUnpackBundle = ({ name, version }) => {
   mkdirp.sync(`bundles/${name}`);
-  await unpackBundleInto(name, version, `bundles/${name}`);
+  return unpackBundleInto(name, version, `bundles/${name}`);
 };
 
-const loadAllBundles = async (lockfile) => {
-  await Promise.all(lockfile.map(fetchAndUnpackBundle));
-};
+const loadAllBundles = (lockfile) => Promise.all(lockfile.map(fetchAndUnpackBundle));
 
 const ensureLockfileExists = async (bundle, lockfile) => {
   if (lockfileExists(lockfile)) {
@@ -31,11 +29,18 @@ const ensureLockfileExists = async (bundle, lockfile) => {
   }
 };
 
-const sync = async (options) => {
-  await ensureLockfileExists(options.bundle, options.lockfile);
-  rimraf.sync('bundles');
-  mkdirp.sync('bundles');
-  await loadAllBundles(await readLockfile(options.lockfile));
+const sync = (options) => {
+  return ensureLockfileExists(options.bundle, options.lockfile)
+    .then(() => {
+      rimraf.sync('bundles');
+      mkdirp.sync('bundles');
+    })
+    .then(() => readLockfile(options.lockfile))
+    .then(loadAllBundles)
+    .catch(e => {
+      console.log('Here?');
+      console.log(`Error: ${e}`);
+    });
 };
 
 export default sync;
