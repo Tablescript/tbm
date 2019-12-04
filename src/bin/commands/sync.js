@@ -3,14 +3,14 @@ import rimraf from 'rimraf';
 import {
   readBundleDescriptor,
   bundleTimestamp,
-} from '../descriptor';
+} from '../../lib/descriptor';
 import {
   lockfileTimestamp,
   readLockfile,
   lockfileExists,
   rebuildLockfile,
-} from '../lockfile';
-import { unpackBundleInto } from '../repository';
+} from '../../lib/lockfile';
+import { unpackBundleInto } from '../../lib/repository';
 
 const fetchAndUnpackBundle = ({ name, version }) => {
   mkdirp.sync(`bundles/${name}`);

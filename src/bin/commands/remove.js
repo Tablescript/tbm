@@ -3,7 +3,7 @@ import {
   readBundleDescriptor,
   removeBundleDependency,
   writeBundleDescriptor,
-} from '../descriptor';
+} from '../../lib/descriptor';
 import sync from './sync';
 
 const remove = async (name, options) => {
