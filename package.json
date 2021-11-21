@@ -23,30 +23,30 @@
     "url": "https://github.com/Tablescript/tbm"
   },
   "devDependencies": {
-    "@babel/node": "^7.6.2",
+    "@babel/node": "^7.16.0",
     "chai": "*",
     "chai-as-promised": "*",
     "chai-spies-next": "*",
-    "eslint": "^5.16.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.17.2",
-    "eslint-plugin-jest": "^22.7.1",
-    "madge": "^3.2.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jest": "^25.2.4",
+    "madge": "^5.0.1",
     "mocha": "*"
   },
   "dependencies": {
-    "@babel/cli": "^7.6.2",
-    "@babel/core": "^7.6.2",
-    "@babel/plugin-proposal-object-rest-spread": "^7.6.2",
-    "@babel/preset-env": "^7.6.2",
-    "axios": "^0.19.0",
-    "commander": "^3.0.2",
-    "mkdirp": "^0.5.1",
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.16.0",
+    "@babel/preset-env": "^7.16.4",
+    "axios": "^0.24.0",
+    "commander": "^8.3.0",
+    "mkdirp": "^1.0.4",
     "pkginfo": "^0.4.1",
-    "ramda": "^0.26.1",
-    "recursive-copy": "^2.0.10",
-    "rimraf": "^3.0.0",
-    "semver": "^6.3.0",
-    "tar": "^4.4.13"
+    "ramda": "^0.27.1",
+    "recursive-copy": "^2.0.13",
+    "rimraf": "^3.0.2",
+    "semver": "^7.3.5",
+    "tar": "^6.1.11"
   }
 }
