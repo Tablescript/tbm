@@ -3,8 +3,8 @@ import {
   readBundleDescriptor,
   writeBundleDescriptor,
   addBundleDependency,
-} from '../descriptor';
-import { getLatestVersionFor } from '../repository';
+} from '../../lib/descriptor';
+import { getLatestVersionFor } from '../../lib/repository';
 import sync from './sync';
 
 const throwIfEmpty = R.curry((message, s) => {
@@ -21,11 +21,11 @@ const parseDependency = async (name, version) => {
 const add = (name, version, options) => {
   const bundleDescriptor = readBundleDescriptor(options.bundle);
   return parseDependency(name, version)
-    .then(([name, version]) => addBundleDependency(name, version, bundleDescriptor))
+    .then(([dependencyName, dependencyVersion]) => addBundleDependency(dependencyName, dependencyVersion, bundleDescriptor))
     .then(writeBundleDescriptor(options.bundle))
     .then(() => sync(options))
-    .catch(e => {
-      console.log(`Error: ${e}`);
+    .catch((e) => {
+      console.log(`Error: ${e}`); // eslint-disable-line no-console
     });
 };
 

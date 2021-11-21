@@ -4,7 +4,7 @@ import {
   bundleDescriptorExists,
   readBundleDescriptor,
   writeBundleDescriptor,
-} from '../descriptor';
+} from '../../lib/descriptor';
 
 const ask = (rl, answers, question) => new Promise((resolve) => {
   rl.question(`${question.query} [${answers[question.name] || ''}]: `, (answer) => {
@@ -29,32 +29,32 @@ const applyParameter = (value, key) => (descriptor) => {
   return descriptor;
 };
 
-const allParameters = (applyParameter, options) => ([
-  applyParameter(options.bundleName, 'name'),
-  applyParameter(options.bundleDescription, 'description'),
-  applyParameter(options.bundleVersion, 'version'),
-  applyParameter(options.main, 'main'),
-  applyParameter(options.author, 'author'),
-  applyParameter(options.email, 'email'),
-  applyParameter(options.url, 'url'),
-  applyParameter(options.license, 'license'),
+const allParameters = (applyParameterFn, options) => ([
+  applyParameterFn(options.bundleName, 'name'),
+  applyParameterFn(options.bundleDescription, 'description'),
+  applyParameterFn(options.bundleVersion, 'version'),
+  applyParameterFn(options.main, 'main'),
+  applyParameterFn(options.author, 'author'),
+  applyParameterFn(options.email, 'email'),
+  applyParameterFn(options.url, 'url'),
+  applyParameterFn(options.license, 'license'),
 ]);
 
-const answersFromCommandLine = parameters => parameters.reduce((acc, applyParameter) => applyParameter(acc), {});
+const answersFromCommandLine = (parameters) => parameters.reduce((acc, applyParameterFn) => applyParameterFn(acc), {});
 
 const buildQuestion = (query, name) => ({ query, name });
-const allQuestions = buildQuestion => ([
-  buildQuestion('Bundle name', 'name'),
-  buildQuestion('Description', 'description'),
-  buildQuestion('Version', 'version'),
-  buildQuestion('Main script', 'main'),
-  buildQuestion('Author name', 'author'),
-  buildQuestion('Author email', 'email'),
-  buildQuestion('Bundle URL', 'url'),
-  buildQuestion('License', 'license'),
+const allQuestions = (buildQuestionFn) => ([
+  buildQuestionFn('Bundle name', 'name'),
+  buildQuestionFn('Description', 'description'),
+  buildQuestionFn('Version', 'version'),
+  buildQuestionFn('Main script', 'main'),
+  buildQuestionFn('Author name', 'author'),
+  buildQuestionFn('Author email', 'email'),
+  buildQuestionFn('Bundle URL', 'url'),
+  buildQuestionFn('License', 'license'),
 ]);
 
-const questionReducer = rl => (acc, question) => acc.then(answers => ask(rl, answers, question));
+const questionReducer = (rl) => (acc, question) => acc.then((answers) => ask(rl, answers, question));
 const askAll = (rl, questions, initialResponses) => questions.reduce(questionReducer(rl), Promise.resolve(initialResponses));
 
 const currentDirectoryName = () => process.cwd().split('/').slice(-1)[0];

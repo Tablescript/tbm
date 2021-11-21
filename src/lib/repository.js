@@ -10,8 +10,8 @@ const cachePath = () => {
   return `${homeDir}/.tbm/cache`;
 };
 
-const bundleCachePath = name => `${cachePath()}/${name}`;
-const manifestPath = name => `${bundleCachePath(name)}/manifest.json`;
+const bundleCachePath = (name) => `${cachePath()}/${name}`;
+const manifestPath = (name) => `${bundleCachePath(name)}/manifest.json`;
 const versionedName = (name, version) => `${name}-${version}`;
 const bundleVersionPath = (name, version) => `${bundleCachePath(name)}/${versionedName(name, version)}`;
 const bundleFilePath = (name, version) => `${bundleVersionPath(name, version)}/bundle.json`;
@@ -19,7 +19,7 @@ const tarballFilename = (name, version) => `${versionedName(name, version)}.tgz`
 const tarballPath = (name, version) => `${bundleCachePath(name)}/${tarballFilename(name, version)}`;
 
 const repoRoot = 'http://localhost:8080/api/v1';
-const repoManifestUrl = name => `${repoRoot}/bundles/${name}/manifest`;
+const repoManifestUrl = (name) => `${repoRoot}/bundles/${name}/manifest`;
 const repoBundleTarballUrl = (name, version) => `${repoRoot}/bundles/${name}/-/${tarballFilename(name, version)}`;
 
 const ensureCachePathExists = () => {
@@ -35,7 +35,7 @@ const initializeConfig = () => {
 };
 
 const bundleFileExists = (name, version) => fs.existsSync(bundleFilePath(name, version));
-const manifestFileExists = name => fs.existsSync(manifestPath(name));
+const manifestFileExists = (name) => fs.existsSync(manifestPath(name));
 
 const ensureManifestIsCached = async (name) => {
   if (manifestFileExists(name)) {

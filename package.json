@@ -7,10 +7,10 @@
     "tbm": "./dist/bin/tbm.js"
   },
   "scripts": {
-    "build": "node_modules/.bin/babel src --ignore __tests__ --out-dir dist",
+    "build": "babel src --ignore __tests__ --out-dir dist",
     "dependency-graph": "madge --image tablescript-graph.svg src/bin/tablescript.js",
-    "lint": "node_modules/.bin/eslint src",
-    "test": "mocha --require babel-core/register --require babel-polyfill src/**/*.test.js"
+    "lint": "eslint src",
+    "test": "mocha --require @babel/register src/**/*.test.js"
   },
   "author": {
     "name": "Jamie Hale",

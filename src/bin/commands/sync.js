@@ -29,18 +29,15 @@ const ensureLockfileExists = async (bundle, lockfile) => {
   }
 };
 
-const sync = (options) => {
-  return ensureLockfileExists(options.bundle, options.lockfile)
-    .then(() => {
-      rimraf.sync('bundles');
-      mkdirp.sync('bundles');
-    })
-    .then(() => readLockfile(options.lockfile))
-    .then(loadAllBundles)
-    .catch(e => {
-      console.log('Here?');
-      console.log(`Error: ${e}`);
-    });
-};
+const sync = (options) => ensureLockfileExists(options.bundle, options.lockfile)
+  .then(() => {
+    rimraf.sync('bundles');
+    mkdirp.sync('bundles');
+  })
+  .then(() => readLockfile(options.lockfile))
+  .then(loadAllBundles)
+  .catch((e) => {
+    console.log(`Error: ${e}`); // eslint-disable-line no-console
+  });
 
 export default sync;

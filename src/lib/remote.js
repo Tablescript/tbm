@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const pipeToWriter = writer => (response) => {
+const pipeToWriter = (writer) => (response) => {
   response.data.pipe(writer);
   return new Promise((resolve, reject) => {
     writer.on('finish', resolve);
@@ -8,5 +8,5 @@ const pipeToWriter = writer => (response) => {
   });
 };
 
-export const getAndStreamInto = (url, writer) => axios.get(url, { responseType: 'stream' })
+export const getAndStreamInto = (url, writer) => axios.get(url, { responseType: 'stream' }) // eslint-disable-line import/prefer-default-export
   .then(pipeToWriter(writer));

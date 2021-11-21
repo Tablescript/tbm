@@ -30,7 +30,7 @@ const main = () => {
     .description('log into bundle repository')
     .option('-f, --bundle [filename]', 'bundle file', 'bundle.json')
     .action(() => {
-      console.log('login');
+      console.log('login'); // eslint-disable-line no-console
     });
 
   program
@@ -38,7 +38,7 @@ const main = () => {
     .description('log out of bundle repository')
     .option('-f, --bundle [filename]', 'bundle file', 'bundle.json')
     .action(() => {
-      console.log('logout');
+      console.log('logout'); // eslint-disable-line no-console
     });
 
   program
@@ -46,7 +46,7 @@ const main = () => {
     .description('publish bundle to repository')
     .option('-f, --bundle [filename]', 'bundle file', 'bundle.json')
     .action(() => {
-      console.log('publish');
+      console.log('publish'); // eslint-disable-line no-console
     });
 
   program
